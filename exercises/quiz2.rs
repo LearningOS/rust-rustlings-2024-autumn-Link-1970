@@ -20,7 +20,7 @@
 //
 // No hints this time!
 
-// I AM NOT DONE
+
 
 pub enum Command {
     Uppercase,
@@ -37,6 +37,22 @@ mod my_module {
         let mut output:Vec<String>  = vec![];
         for (string, command) in input.iter() {
             // TODO: Complete the function body. You can do it!
+             match command{
+                Command::Uppercase => {
+                    output.push(string.to_uppercase());
+                }
+                Command::Trim => {
+                    output.push(string.trim().to_string());
+                }
+                Command::Append(usize) => {
+                    let mut ans = String::new();
+                    for i in 0..*usize {
+                        ans += &string.clone();
+                    }
+                    output.push(format!("{}bar", ans));
+                }
+            }
+
         }
         output
     }

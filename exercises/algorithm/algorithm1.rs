@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -16,10 +16,7 @@ struct Node<T> {
 
 impl<T> Node<T> {
     fn new(t: T) -> Node<T> {
-        Node {
-            val: t,
-            next: None,
-        }
+        Node { val: t, next: None }
     }
 }
 #[derive(Debug)]
@@ -55,7 +52,12 @@ impl<T> LinkedList<T> {
         self.end = node_ptr;
         self.length += 1;
     }
+}
 
+impl<T> LinkedList<T>
+where
+    T: PartialOrd + Copy,
+{
     pub fn get(&mut self, index: i32) -> Option<&T> {
         self.get_ith_node(self.start, index)
     }
@@ -69,15 +71,40 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+
+    pub fn merge(list_a: LinkedList<T>, list_b: LinkedList<T>) -> Self {
+        //TODO
+        let mut merged_list = LinkedList::new();
+
+        let mut cur_a = list_a.start;
+        let mut cur_b = list_b.start;
+
+        while let (Some(node_a), Some(node_b)) = (cur_a, cur_b) {
+            let val_a = unsafe { node_a.as_ref().val };
+            let val_b = unsafe { node_b.as_ref().val };
+
+            if val_a <= val_b {
+                merged_list.add(val_a);
+                cur_a = unsafe { node_a.as_ref().next };
+            } else {
+                merged_list.add(val_b);
+                cur_b = unsafe { node_b.as_ref().next };
+            }
         }
-	}
+
+        while let Some(node_a) = cur_a {
+            let val_a = unsafe { node_a.as_ref().val };
+            merged_list.add(val_a);
+            cur_a = unsafe { node_a.as_ref().next };
+        }
+        while let Some(node_b) = cur_b {
+            let val_b = unsafe { node_b.as_ref().val };
+            merged_list.add(val_b);
+            cur_b = unsafe { node_b.as_ref().next };
+        }
+
+        merged_list
+    }
 }
 
 impl<T> Display for LinkedList<T>
